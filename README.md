@@ -23,7 +23,8 @@ Unityで数字を画像(スプライト)で表示するためのスクリプト�
 
 ## 解説
 
-####呼び出す側のコード
+###呼び出す側のコード
+
 （SampleScript.csを参考にしてください）
 
 ```
@@ -40,12 +41,14 @@ ni.maxDigit = 9;
 
 ０埋めを表示したくない場合は、Ignore Filled Zeroのチェックをオンにしてください。
 
-####数字の画像を変えたい場合
+###数字の画像を変えたい場合
+
 Resources/img123456789のファイルを差し替えてください
 
 
 さらに詳しくは以下ページをごらんください
-https://darjjeelling.wordpress.com/
+
+[https://darjjeelling.wordpress.com/](https://darjjeelling.wordpress.com/2017/04/02/unity%e3%81%a7%e7%94%bb%e5%83%8f%e3%81%ae%e6%95%b0%e5%ad%97%e3%82%92%e6%8f%8f%e7%94%bb%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95)
 
 ## 動作確認環境
 - Unity5.5
