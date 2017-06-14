@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,42 +53,49 @@ public class NumberImageRenderer : MonoBehaviour {
 
 	// 数字をSpriteで描画する
 	void DrawSprite(string text) {
-		if (sprites == null) {
-			sprites = Resources.LoadAll<Sprite>(data.fileName);
-		}
-
-		for (int i = text.Length - 1 ; i >= 0 ; i--) {
-			Sprite sprite = null;
-			var sp_name = data.fileName + "_" + text [i].ToString ();
-
+		for (int i=0; i <= text.Length - 1;i++) {
+			Sprite num_sp = null;
 			//頭の０埋めを表示しない処理
-			if (text [i].ToString().Equals("0") && 
-				i <= text.Length - 1 - digit &&
-				data.ignoreFilledZero) {
-				sprite = Resources.Load<Sprite> ("clear");//Resourcesの下に"clear"ファイルがあること
+			if (text [i].ToString ().Equals ("0") &&
+			    i <= text.Length - 1 - digit &&
+			    data.ignoreFilledZero) {
+				num_sp = Resources.Load<Sprite> ("clear");//Resourcesの下に"clear"ファイルがあること
 			} else {
-				sprite = System.Array.Find (sprites, (s) => s.name.Equals (sp_name));
+				var sp_name = data.fileName + "_" + text [i].ToString ();
+				num_sp = System.Array.Find (sprites, (s) => s.name.Equals (sp_name));
 			}
-
-			var figure = Create(sprite);
-			float spWidth = figure.rectTrans.sizeDelta.x / text.Length;
-			float spStartx = -0.5f * figure.rectTrans.sizeDelta.x + spWidth * 0.5f;
-			figure.rectTrans.anchoredPosition3D = new Vector3(i * spWidth + spStartx, 0, 0);
-
-			//画像のサイズ拡大縮小
-			float rateX = spWidth / sprite.bounds.size.x;
-			float rateY = figure.rectTrans.sizeDelta.y / sprite.bounds.size.y;
-			figure.sr.transform.localScale = new Vector3 (rateX,rateY,1.0f);
-			figureList.Add(figure);
+			figureList [i].sr.sprite = num_sp;//Spriteを変更
 		}
 	}
 
-	//前回呼び出し時のデータをクリア
-	public void Reflesh() {
-		foreach (Figure figure in figureList) {
-			Destroy(figure.sr.gameObject);
+	//空の数字Spriteを生成
+	public void CreateEmpty(int digit) {
+		if (sprites == null) {
+			sprites = Resources.LoadAll<Sprite>(data.fileName);
+			//for (int i = digit - 1 ; i >= 0 ; i--) {
+			for (int i=0; i<digit ;  i++) {
+				Sprite sprite = null;
+				var sp0_name = data.fileName + "_" + "0";
+				sprite = System.Array.Find (sprites, (s) => s.name.Equals (sp0_name));
+
+				var figure = Create(sprite);
+				float spWidth = figure.rectTrans.sizeDelta.x / digit;
+				float spStartx = -0.5f * figure.rectTrans.sizeDelta.x + spWidth * 0.5f;
+				figure.rectTrans.anchoredPosition3D = new Vector3(i * spWidth + spStartx, 0, 0);
+
+				//画像のサイズ拡大縮小
+				float rateX = spWidth / sprite.bounds.size.x;
+				float rateY = figure.rectTrans.sizeDelta.y / sprite.bounds.size.y;
+				figure.sr.transform.localScale = new Vector3 (rateX,rateY,1.0f);
+
+				if (data.ignoreFilledZero) {//頭の０埋めを表示しない設定の場合
+					//透明spriteで埋める
+					Sprite clear = Resources.Load<Sprite> ("clear");//Resourcesの下に"clear"ファイルがあること
+					figure.sr.sprite = clear;
+				}
+				figureList.Add(figure);
+			}
 		}
-		figureList.Clear();
 	}
 
 	// 数字をSpriteで描画する
@@ -101,7 +108,7 @@ public class NumberImageRenderer : MonoBehaviour {
 			return;
 		}
 
-		Reflesh();
+		CreateEmpty(maxDigit);
 		String form = null;
 		if(maxDigit!=0) {
 			form = "D" + maxDigit;
